@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import Nav from '@/components/Nav'
 import PayslipCard from '@/components/PayslipCard'
 import TaxDonutChart from '@/components/TaxDonutChart'
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client'
 import type { TaxBreakdown, TaxInput, EmploymentType, PayFrequency, StudentLoanPlan } from '@/types/finance'
 
 const EMPLOYMENT_TYPES: { value: EmploymentType; label: string }[] = [
@@ -53,6 +54,46 @@ export default function CalculatorPage() {
   const [result, setResult] = useState<TaxBreakdown | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [userId, setUserId] = useState<string | null>(null)
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return
+    const supabase = createClient()
+
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        setUserId(data.user.id)
+        loadProfile(supabase)
+      }
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const uid = session?.user?.id ?? null
+      setUserId(uid)
+      if (uid) loadProfile(supabase)
+    })
+
+    return () => subscription.unsubscribe()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  async function loadProfile(supabase: ReturnType<typeof createClient>) {
+    const res = await fetch('/api/tax-profile')
+    if (!res.ok) return
+    const { taxProfile } = await res.json()
+    if (!taxProfile) return
+    setForm((prev) => ({
+      ...prev,
+      grossIncome: taxProfile.gross_income ?? prev.grossIncome,
+      taxCode: taxProfile.tax_code ?? prev.taxCode,
+      payFrequency: taxProfile.pay_frequency ?? prev.payFrequency,
+      pensionPct: taxProfile.pension_pct ?? prev.pensionPct,
+      studentLoanPlan: taxProfile.student_loan_plan ?? prev.studentLoanPlan,
+      scotland: taxProfile.scotland ?? prev.scotland,
+      employmentType: taxProfile.employment_type ?? prev.employmentType,
+    }))
+  }
 
   const set = useCallback(<K extends keyof TaxInput>(key: K, value: TaxInput[K]) => {
     setForm((f) => ({ ...f, [key]: value }))
@@ -73,6 +114,30 @@ export default function CalculatorPage() {
       setError('Something went wrong. Please try again.')
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function saveTaxProfile() {
+    setSaveStatus('saving')
+    const res = await fetch('/api/tax-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        grossIncome: form.grossIncome,
+        taxCode: form.taxCode,
+        payFrequency: form.payFrequency,
+        pensionPct: form.pensionPct,
+        studentLoanPlan: form.studentLoanPlan,
+        scotland: form.scotland,
+        employmentType: form.employmentType,
+      }),
+    })
+    if (res.ok) {
+      setSaveStatus('saved')
+      setTimeout(() => setSaveStatus('idle'), 2500)
+    } else {
+      setSaveStatus('error')
+      setTimeout(() => setSaveStatus('idle'), 3000)
     }
   }
 
@@ -115,7 +180,7 @@ export default function CalculatorPage() {
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7a8599]">£</span>
                 <input
                   type="number"
-                  className="w-full pl-7"
+                  className="w-full pl-9"
                   min={0}
                   step={1000}
                   value={form.grossIncome}
@@ -206,6 +271,23 @@ export default function CalculatorPage() {
             >
               {loading ? 'Calculating…' : 'Calculate Take-Home Pay'}
             </button>
+
+            {/* Save tax profile */}
+            {userId ? (
+              <div className="flex items-center gap-3 pt-1">
+                <button
+                  onClick={saveTaxProfile}
+                  disabled={saveStatus === 'saving'}
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#2a3447] hover:border-[#c9a84c]/50 text-[#7a8599] hover:text-[#c9a84c] transition-colors disabled:opacity-60"
+                >
+                  {saveStatus === 'saving' ? 'Saving…' : 'Save Tax Profile'}
+                </button>
+                {saveStatus === 'saved' && <span className="text-sm text-[#22c55e]">Saved!</span>}
+                {saveStatus === 'error' && <span className="text-sm text-[#ef4444]">Save failed</span>}
+              </div>
+            ) : (
+              <p className="text-xs text-[#7a8599]">Sign in to save your tax profile.</p>
+            )}
           </div>
 
           {/* Results panel */}

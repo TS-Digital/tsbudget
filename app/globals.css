@@ -16,55 +16,63 @@
   --font-mono: var(--font-space-mono);
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
+/*
+  Put all custom element styles inside @layer base.
+  This lets Tailwind utility classes (pl-*, pt-*, etc.) override them via the
+  utilities layer, which has higher cascade priority than base.
+*/
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #0d1017;
+    color: #e8eaf0;
+    font-family: var(--font-dm-sans), system-ui, sans-serif;
+    min-height: 100dvh;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #141920; }
+  ::-webkit-scrollbar-thumb { background: #2a3447; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #c9a84c; }
+
+  /* Input / select — padding here is overridable by Tailwind utility pl-* classes */
+  input[type="text"],
+  input[type="number"],
+  select,
+  textarea {
+    background: #141920;
+    border: 1px solid #2a3447;
+    color: #e8eaf0;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9375rem;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  select:focus,
+  textarea:focus {
+    border-color: #c9a84c;
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+  }
+
+  input[type="range"] {
+    accent-color: #c9a84c;
+  }
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  background-color: #0d1017;
-  color: #e8eaf0;
-  font-family: var(--font-dm-sans), system-ui, sans-serif;
-  min-height: 100dvh;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #141920; }
-::-webkit-scrollbar-thumb { background: #2a3447; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #c9a84c; }
-
-/* Input / select base */
-input[type="text"],
-input[type="number"],
-select,
-textarea {
-  background: #141920;
-  border: 1px solid #2a3447;
-  color: #e8eaf0;
-  border-radius: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.9375rem;
-  outline: none;
-  transition: border-color 0.15s;
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus,
-select:focus,
-textarea:focus {
-  border-color: #c9a84c;
-  box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
-}
-
-input[type="range"] {
-  accent-color: #c9a84c;
-}
-
-/* Number font helper */
+/* Number font helper — kept outside layer so it's always accessible */
 .font-num {
   font-family: var(--font-space-mono), monospace;
   font-feature-settings: "tnum";

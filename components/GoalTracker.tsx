@@ -1,40 +1,109 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client'
 import type { Goal } from '@/types/finance'
 
 function fmt(n: number) {
   return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(n)
 }
 
-function makeId() {
-  return Math.random().toString(36).slice(2, 9)
-}
+const DEFAULT_GOALS: Goal[] = [
+  { id: 'local-1', name: 'Emergency Fund', targetAmount: 3000, currentAmount: 500, monthlyContribution: 200 },
+]
 
 export default function GoalTracker() {
-  const [goals, setGoals] = useState<Goal[]>([
-    { id: makeId(), name: 'Emergency Fund', targetAmount: 3000, currentAmount: 500, monthlyContribution: 200 },
-  ])
+  const [goals, setGoals] = useState<Goal[]>(DEFAULT_GOALS)
+  const [userId, setUserId] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
   const [showAdd, setShowAdd] = useState(false)
   const [newGoal, setNewGoal] = useState({ name: '', targetAmount: 1000, currentAmount: 0, monthlyContribution: 100 })
 
-  function addGoal() {
+  const loadGoals = useCallback(async () => {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/goals')
+      if (res.ok) {
+        const { goals: data } = await res.json()
+        setGoals(data ?? [])
+      }
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return
+
+    const supabase = createClient()
+
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        setUserId(data.user.id)
+        loadGoals()
+      }
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const uid = session?.user?.id ?? null
+      setUserId(uid)
+      if (uid) {
+        loadGoals()
+      } else {
+        setGoals(DEFAULT_GOALS)
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [loadGoals])
+
+  async function addGoal() {
     if (!newGoal.name) return
-    setGoals((prev) => [...prev, { ...newGoal, id: makeId() }])
+
+    if (userId) {
+      setSaveStatus('saving')
+      const res = await fetch('/api/goals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newGoal),
+      })
+      if (res.ok) {
+        const { goal } = await res.json()
+        setGoals((prev) => [...prev, goal])
+        setSaveStatus('saved')
+        setTimeout(() => setSaveStatus('idle'), 2000)
+      } else {
+        setSaveStatus('error')
+      }
+    } else {
+      setGoals((prev) => [...prev, { ...newGoal, id: Math.random().toString(36).slice(2) }])
+    }
+
     setNewGoal({ name: '', targetAmount: 1000, currentAmount: 0, monthlyContribution: 100 })
     setShowAdd(false)
   }
 
-  function removeGoal(id: string) {
+  async function removeGoal(id: string) {
     setGoals((prev) => prev.filter((g) => g.id !== id))
+    if (userId) {
+      await fetch(`/api/goals?id=${id}`, { method: 'DELETE' })
+    }
   }
 
   return (
     <div className="rounded-2xl border border-[#2a3447] bg-[#141920] p-6">
       <div className="flex items-center justify-between mb-5">
-        <h2 className="font-bold text-lg" style={{ fontFamily: 'var(--font-syne)' }}>
-          Goal Tracker
-        </h2>
+        <div>
+          <h2 className="font-bold text-lg" style={{ fontFamily: 'var(--font-syne)' }}>
+            Goal Tracker
+          </h2>
+          {userId && (
+            <p className="text-xs text-[#22c55e] mt-0.5">
+              {saveStatus === 'saving' ? 'Saving…' : saveStatus === 'saved' ? 'Saved' : saveStatus === 'error' ? 'Save failed' : 'Synced to account'}
+            </p>
+          )}
+        </div>
         <button
           onClick={() => setShowAdd((v) => !v)}
           className="text-sm px-3 py-1.5 rounded-lg border border-[#2a3447] hover:border-[#c9a84c]/50 text-[#7a8599] hover:text-[#c9a84c] transition-colors"
@@ -80,46 +149,58 @@ export default function GoalTracker() {
         </div>
       )}
 
-      <div className="space-y-5">
-        {goals.map((g) => {
-          const pct = Math.min(100, (g.currentAmount / g.targetAmount) * 100)
-          const remaining = g.targetAmount - g.currentAmount
-          const monthsLeft = g.monthlyContribution > 0 ? Math.ceil(remaining / g.monthlyContribution) : null
+      {loading ? (
+        <div className="py-8 text-center text-sm text-[#7a8599]">Loading goals…</div>
+      ) : goals.length === 0 ? (
+        <div className="py-8 text-center text-sm text-[#7a8599]">No goals yet. Add one above.</div>
+      ) : (
+        <div className="space-y-5">
+          {goals.map((g) => {
+            const pct = Math.min(100, (g.currentAmount / g.targetAmount) * 100)
+            const remaining = g.targetAmount - g.currentAmount
+            const monthsLeft = g.monthlyContribution > 0 ? Math.ceil(remaining / g.monthlyContribution) : null
 
-          return (
-            <div key={g.id}>
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-medium text-sm">{g.name}</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-[#7a8599]">
-                    {fmt(g.currentAmount)} / {fmt(g.targetAmount)}
-                  </span>
-                  <button
-                    onClick={() => removeGoal(g.id)}
-                    className="text-[#7a8599] hover:text-[#ef4444] text-xs transition-colors"
-                  >
-                    ×
-                  </button>
+            return (
+              <div key={g.id}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-medium text-sm">{g.name}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-[#7a8599]">
+                      {fmt(g.currentAmount)} / {fmt(g.targetAmount)}
+                    </span>
+                    <button
+                      onClick={() => removeGoal(g.id)}
+                      className="text-[#7a8599] hover:text-[#ef4444] text-xs transition-colors"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </div>
+                <div className="w-full h-2.5 rounded-full bg-[#2a3447] overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{ width: `${pct}%`, background: pct >= 100 ? '#22c55e' : '#c9a84c' }}
+                  />
+                </div>
+                <div className="flex justify-between text-xs text-[#7a8599] mt-1.5">
+                  <span>{pct.toFixed(0)}% complete</span>
+                  {monthsLeft !== null && (
+                    <span>
+                      ~{monthsLeft} {monthsLeft === 1 ? 'month' : 'months'} at {fmt(g.monthlyContribution)}/mo
+                    </span>
+                  )}
                 </div>
               </div>
-              <div className="w-full h-2.5 rounded-full bg-[#2a3447] overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{ width: `${pct}%`, background: pct >= 100 ? '#22c55e' : '#c9a84c' }}
-                />
-              </div>
-              <div className="flex justify-between text-xs text-[#7a8599] mt-1.5">
-                <span>{pct.toFixed(0)}% complete</span>
-                {monthsLeft !== null && (
-                  <span>
-                    ~{monthsLeft} {monthsLeft === 1 ? 'month' : 'months'} at {fmt(g.monthlyContribution)}/mo
-                  </span>
-                )}
-              </div>
-            </div>
-          )
-        })}
-      </div>
+            )
+          })}
+        </div>
+      )}
+
+      {!userId && (
+        <p className="mt-5 text-xs text-[#7a8599] border-t border-[#2a3447] pt-4">
+          Sign in to save goals across devices.
+        </p>
+      )}
     </div>
   )
 }

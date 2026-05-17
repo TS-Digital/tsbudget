@@ -96,7 +96,7 @@ export default function SelfEmployedPage() {
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7a8599]">£</span>
                     <input
                       type="number"
-                      className="w-full pl-7"
+                      className="w-full pl-9"
                       min={0}
                       step={1000}
                       value={f.value}
@@ -165,7 +165,7 @@ export default function SelfEmployedPage() {
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7a8599]">£</span>
                       <input
                         type="number"
-                        className="w-full pl-7"
+                        className="w-full pl-9"
                         min={0}
                         step={1000}
                         value={directorSalary}

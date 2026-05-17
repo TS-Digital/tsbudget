@@ -1,10 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Nav from '@/components/Nav'
 import CompoundChart from '@/components/CompoundChart'
 import GoalTracker from '@/components/GoalTracker'
 import AIInsightCard from '@/components/AIInsightCard'
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client'
+import type { BudgetCategory } from '@/types/finance'
 
 function fmt(n: number) {
   return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(n)
@@ -17,6 +19,48 @@ export default function DashboardPage() {
     savings: 300,
     biggestCategory: 'Rent / Mortgage',
   })
+  const [userId, setUserId] = useState<string | null>(null)
+  const [budgetLoaded, setBudgetLoaded] = useState(false)
+
+  const loadFromBudget = useCallback(async () => {
+    const res = await fetch('/api/budgets')
+    if (!res.ok) return
+    const { budget } = await res.json()
+    if (!budget) return
+
+    const categories: BudgetCategory[] = Array.isArray(budget.categories) ? budget.categories : []
+    const net = budget.net_monthly_income ?? 0
+    const committed = categories.filter((c) => c.type === 'need').reduce((s, c) => s + (c.amount ?? 0), 0)
+    const savings = categories.filter((c) => c.type === 'saving').reduce((s, c) => s + (c.amount ?? 0), 0)
+    const biggest = categories.sort((a, b) => (b.amount ?? 0) - (a.amount ?? 0))[0]?.name ?? 'Rent / Mortgage'
+
+    setSnapshot({ net, committed, savings, biggestCategory: biggest })
+    setBudgetLoaded(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return
+    const supabase = createClient()
+
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        setUserId(data.user.id)
+        loadFromBudget()
+      }
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const uid = session?.user?.id ?? null
+      setUserId(uid)
+      if (uid) {
+        loadFromBudget()
+      } else {
+        setBudgetLoaded(false)
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [loadFromBudget])
 
   const discretionary = snapshot.net - snapshot.committed - snapshot.savings
   const savingsRate = snapshot.net > 0 ? (snapshot.savings / snapshot.net) * 100 : 0
@@ -34,9 +78,17 @@ export default function DashboardPage() {
 
         {/* Snapshot inputs */}
         <div className="rounded-2xl border border-[#2a3447] bg-[#141920] p-6 mb-6">
-          <h2 className="font-bold mb-4" style={{ fontFamily: 'var(--font-syne)' }}>
-            Monthly Snapshot
-          </h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-bold" style={{ fontFamily: 'var(--font-syne)' }}>
+              Monthly Snapshot
+            </h2>
+            {userId && budgetLoaded && (
+              <span className="text-xs text-[#22c55e]">Loaded from saved budget</span>
+            )}
+            {userId && !budgetLoaded && (
+              <span className="text-xs text-[#7a8599]">No saved budget yet — save one from the Budget page</span>
+            )}
+          </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
             {[
               { label: 'Net Monthly Income (£)', key: 'net' as const },

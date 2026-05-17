@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 import { calcBudget, createDefaultCategories } from '@/lib/budgetEngine'
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/client'
 import type { BudgetCategory, BudgetMethod, ExpenseType } from '@/types/finance'
 
 const METHOD_OPTIONS: { value: BudgetMethod; label: string; desc: string }[] = [
@@ -27,11 +28,65 @@ export default function BudgetAllocator({ defaultNetMonthly = 2000 }: { defaultN
   const [method, setMethod] = useState<BudgetMethod>('50/30/20')
   const [savingsPct, setSavingsPct] = useState(20)
   const [cats, setCats] = useState<BudgetCategory[]>(createDefaultCategories)
+  const [userId, setUserId] = useState<string | null>(null)
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
 
   const budget = useMemo(
     () => calcBudget(netMonthly, cats, method, savingsPct),
     [netMonthly, cats, method, savingsPct],
   )
+
+  const loadBudget = useCallback(async () => {
+    const res = await fetch('/api/budgets')
+    if (!res.ok) return
+    const { budget: saved } = await res.json()
+    if (!saved) return
+    if (saved.net_monthly_income) setNetMonthly(saved.net_monthly_income)
+    if (saved.method) setMethod(saved.method)
+    if (Array.isArray(saved.categories) && saved.categories.length > 0) setCats(saved.categories)
+  }, [])
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return
+
+    const supabase = createClient()
+
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        setUserId(data.user.id)
+        loadBudget()
+      }
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const uid = session?.user?.id ?? null
+      setUserId(uid)
+      if (uid) loadBudget()
+    })
+
+    return () => subscription.unsubscribe()
+  }, [loadBudget])
+
+  async function saveBudget() {
+    setSaveStatus('saving')
+    const res = await fetch('/api/budgets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        method,
+        categories: budget.categories,
+        netMonthlyIncome: netMonthly,
+        incomeSources: [],
+      }),
+    })
+    if (res.ok) {
+      setSaveStatus('saved')
+      setTimeout(() => setSaveStatus('idle'), 2500)
+    } else {
+      setSaveStatus('error')
+      setTimeout(() => setSaveStatus('idle'), 3000)
+    }
+  }
 
   function updateAmount(id: string, amount: number) {
     setCats((prev) => prev.map((c) => (c.id === id ? { ...c, amount: Math.max(0, amount) } : c)))
@@ -223,6 +278,24 @@ export default function BudgetAllocator({ defaultNetMonthly = 2000 }: { defaultN
           </div>
         </div>
       </div>
+
+      {/* Save / sign-in nudge */}
+      {userId ? (
+        <div className="flex items-center gap-3">
+          <button
+            onClick={saveBudget}
+            disabled={saveStatus === 'saving'}
+            className="px-5 py-2.5 rounded-xl font-semibold text-sm text-[#0d1017] disabled:opacity-60 disabled:cursor-not-allowed transition-all hover:scale-[1.01] active:scale-[0.99]"
+            style={{ background: '#c9a84c' }}
+          >
+            {saveStatus === 'saving' ? 'Saving…' : 'Save Budget'}
+          </button>
+          {saveStatus === 'saved' && <span className="text-sm text-[#22c55e]">Budget saved!</span>}
+          {saveStatus === 'error' && <span className="text-sm text-[#ef4444]">Save failed — try again.</span>}
+        </div>
+      ) : (
+        <p className="text-xs text-[#7a8599]">Sign in to save your budget across devices.</p>
+      )}
     </div>
   )
 }
