@@ -1,21 +1,21 @@
 // 2025/26 UK tax year — update this file annually
 export const TAX_YEAR = '2025/26'
 
+// Thresholds are relative to taxable income (gross minus personal allowance).
+// The personal allowance itself is handled by parseTaxCode / calculateTax.
 export const ENGLAND_WALES_BANDS = [
-  { from: 0, to: 12570, rate: 0 },
-  { from: 12570, to: 50270, rate: 0.20 },
-  { from: 50270, to: 125140, rate: 0.40 },
-  { from: 125140, to: Infinity, rate: 0.45 },
+  { from: 0,      to: 37700,    rate: 0.20 }, // basic   (£12,571–£50,270)
+  { from: 37700,  to: 112570,   rate: 0.40 }, // higher  (£50,271–£125,140)
+  { from: 112570, to: Infinity, rate: 0.45 }, // additional
 ]
 
 export const SCOTLAND_BANDS = [
-  { from: 0, to: 12570, rate: 0 },
-  { from: 12570, to: 14876, rate: 0.19 },
-  { from: 14876, to: 26561, rate: 0.20 },
-  { from: 26561, to: 43662, rate: 0.21 },
-  { from: 43662, to: 75000, rate: 0.42 },
-  { from: 75000, to: 125140, rate: 0.45 },
-  { from: 125140, to: Infinity, rate: 0.48 },
+  { from: 0,      to: 2306,     rate: 0.19 }, // starter      (£12,571–£14,876)
+  { from: 2306,   to: 13991,    rate: 0.20 }, // basic        (£14,877–£26,561)
+  { from: 13991,  to: 31092,    rate: 0.21 }, // intermediate (£26,562–£43,662)
+  { from: 31092,  to: 62430,    rate: 0.42 }, // higher       (£43,663–£75,000)
+  { from: 62430,  to: 112570,   rate: 0.45 }, // advanced     (£75,001–£125,140)
+  { from: 112570, to: Infinity, rate: 0.48 }, // top
 ]
 
 export const NI_EMPLOYEE = {
