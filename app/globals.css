@@ -6,7 +6,7 @@
   --color-gold-light: #e2c06e;
   --color-green: #22c55e;
   --color-red: #ef4444;
-  --font-heading: var(--font-syne);
+  --font-heading: 'Satoshi', sans-serif;
   --font-body: var(--font-dm-sans);
   --font-mono: var(--font-space-mono);
 }
