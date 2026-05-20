@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
@@ -25,11 +25,11 @@ export default function CompoundChart() {
   const growth = finalBalance - contributed
 
   return (
-    <div className="rounded-2xl border border-[#2a3447] bg-[#141920] p-6">
+    <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
       <h2 className="font-bold text-lg mb-1" style={{ fontFamily: 'var(--font-syne)' }}>
         Investment Projection
       </h2>
-      <p className="text-xs text-[#7a8599] mb-5">Compound interest calculator</p>
+      <p className="text-xs text-[var(--color-muted)] mb-5">Compound interest calculator</p>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         {[
@@ -39,7 +39,7 @@ export default function CompoundChart() {
           { label: 'Years', value: years, set: setYears, min: 1, step: 1 },
         ].map((f) => (
           <div key={f.label}>
-            <label className="block text-xs text-[#7a8599] mb-1.5">{f.label}</label>
+            <label className="block text-xs text-[var(--color-muted)] mb-1.5">{f.label}</label>
             <input
               type="number"
               className="w-full"
@@ -53,27 +53,27 @@ export default function CompoundChart() {
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="rounded-xl bg-[#1c2433] p-3">
-          <div className="text-xs text-[#7a8599] mb-1">Contributed</div>
+        <div className="rounded-xl bg-[var(--color-surface-2)] p-3">
+          <div className="text-xs text-[var(--color-muted)] mb-1">Contributed</div>
           <div className="font-bold font-num text-lg">{fmt(contributed)}</div>
         </div>
-        <div className="rounded-xl bg-[#1c2433] p-3">
-          <div className="text-xs text-[#7a8599] mb-1">Growth</div>
+        <div className="rounded-xl bg-[var(--color-surface-2)] p-3">
+          <div className="text-xs text-[var(--color-muted)] mb-1">Growth</div>
           <div className="font-bold font-num text-lg" style={{ color: '#22c55e' }}>{fmt(growth)}</div>
         </div>
-        <div className="rounded-xl bg-[#1c2433] p-3">
-          <div className="text-xs text-[#7a8599] mb-1">Final Value</div>
+        <div className="rounded-xl bg-[var(--color-surface-2)] p-3">
+          <div className="text-xs text-[var(--color-muted)] mb-1">Final Value</div>
           <div className="font-bold font-num text-lg" style={{ color: '#c9a84c' }}>{fmt(finalBalance)}</div>
         </div>
       </div>
 
       <ResponsiveContainer width="100%" height={220}>
         <LineChart data={yearlyData}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#2a3447" />
-          <XAxis dataKey="year" tick={{ fontSize: 11, fill: '#7a8599' }} />
-          <YAxis tickFormatter={(v) => `£${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 11, fill: '#7a8599' }} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+          <XAxis dataKey="year" tick={{ fontSize: 11, fill: 'var(--color-muted)' }} />
+          <YAxis tickFormatter={(v) => `£${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 11, fill: 'var(--color-muted)' }} />
           <Tooltip
-            contentStyle={{ background: '#1c2433', border: '1px solid #2a3447', borderRadius: '8px', color: '#e8eaf0' }}
+            contentStyle={{ background: 'var(--color-surface-2)', border: '1px solid #2a3447', borderRadius: '8px', color: 'var(--color-text)' }}
             formatter={(v) => typeof v === 'number' ? fmt(v) : v}
           />
           <Line type="monotone" dataKey="balance" stroke="#c9a84c" strokeWidth={2} dot={false} />

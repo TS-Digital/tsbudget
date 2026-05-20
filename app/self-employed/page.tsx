@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useMemo } from 'react'
 import Nav from '@/components/Nav'
@@ -75,7 +75,7 @@ export default function SelfEmployedPage() {
           <h1 className="text-3xl font-extrabold mb-2" style={{ fontFamily: 'var(--font-syne)' }}>
             Self-Employed / Business Module
           </h1>
-          <p className="text-[#7a8599]">
+          <p className="text-[var(--color-muted)]">
             Profit after expenses, Self-Assessment tax estimate, VAT reserve, and director planning.
           </p>
         </div>
@@ -83,7 +83,7 @@ export default function SelfEmployedPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Inputs */}
           <div className="space-y-5">
-            <div className="rounded-2xl border border-[#2a3447] bg-[#141920] p-6 space-y-4">
+            <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 space-y-4">
               <h2 className="font-bold" style={{ fontFamily: 'var(--font-syne)' }}>Income & Expenses</h2>
 
               {[
@@ -91,9 +91,9 @@ export default function SelfEmployedPage() {
                 { label: 'Allowable Business Expenses (£)', value: expenses, set: setExpenses },
               ].map((f) => (
                 <div key={f.label}>
-                  <label className="block text-xs text-[#7a8599] mb-1.5">{f.label}</label>
+                  <label className="block text-xs text-[var(--color-muted)] mb-1.5">{f.label}</label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7a8599]">£</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-muted)]">£</span>
                     <input
                       type="number"
                       className="w-full pl-9"
@@ -108,13 +108,13 @@ export default function SelfEmployedPage() {
             </div>
 
             {/* VAT */}
-            <div className="rounded-2xl border border-[#2a3447] bg-[#141920] p-6 space-y-4">
+            <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="font-bold" style={{ fontFamily: 'var(--font-syne)' }}>VAT</h2>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <div className="relative">
                     <input type="checkbox" className="sr-only peer" checked={vatRegistered} onChange={(e) => setVatRegistered(e.target.checked)} />
-                    <div className="w-9 h-5 bg-[#2a3447] rounded-full peer-checked:bg-[#c9a84c] transition-colors" />
+                    <div className="w-9 h-5 bg-[var(--color-border)] rounded-full peer-checked:bg-[#c9a84c] transition-colors" />
                     <div className="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-4" />
                   </div>
                   <span className="text-sm">VAT registered</span>
@@ -123,7 +123,7 @@ export default function SelfEmployedPage() {
               {vatRegistered && (
                 <>
                   <div>
-                    <label className="block text-xs text-[#7a8599] mb-1.5">VAT Rate</label>
+                    <label className="block text-xs text-[var(--color-muted)] mb-1.5">VAT Rate</label>
                     <select className="w-full" value={vatRate} onChange={(e) => setVatRate(e.target.value as VatRate)}>
                       <option value="standard">Standard (20%)</option>
                       <option value="reduced">Reduced (5%)</option>
@@ -131,12 +131,12 @@ export default function SelfEmployedPage() {
                     </select>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="rounded-xl bg-[#1c2433] p-3">
-                      <div className="text-xs text-[#7a8599] mb-1">VAT to collect annually</div>
+                    <div className="rounded-xl bg-[var(--color-surface-2)] p-3">
+                      <div className="text-xs text-[var(--color-muted)] mb-1">VAT to collect annually</div>
                       <div className="font-bold font-num text-lg" style={{ color: '#fb923c' }}>{fmt(vatAmount)}</div>
                     </div>
-                    <div className="rounded-xl bg-[#1c2433] p-3">
-                      <div className="text-xs text-[#7a8599] mb-1">VAT per quarter</div>
+                    <div className="rounded-xl bg-[var(--color-surface-2)] p-3">
+                      <div className="text-xs text-[var(--color-muted)] mb-1">VAT per quarter</div>
                       <div className="font-bold font-num text-lg" style={{ color: '#fb923c' }}>{fmt(vatQuarterly)}</div>
                     </div>
                   </div>
@@ -145,13 +145,13 @@ export default function SelfEmployedPage() {
             </div>
 
             {/* Director */}
-            <div className="rounded-2xl border border-[#2a3447] bg-[#141920] p-6 space-y-4">
+            <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="font-bold" style={{ fontFamily: 'var(--font-syne)' }}>Ltd Company Director</h2>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <div className="relative">
                     <input type="checkbox" className="sr-only peer" checked={isDirector} onChange={(e) => setIsDirector(e.target.checked)} />
-                    <div className="w-9 h-5 bg-[#2a3447] rounded-full peer-checked:bg-[#c9a84c] transition-colors" />
+                    <div className="w-9 h-5 bg-[var(--color-border)] rounded-full peer-checked:bg-[#c9a84c] transition-colors" />
                     <div className="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-4" />
                   </div>
                   <span className="text-sm">I run a Ltd company</span>
@@ -160,9 +160,9 @@ export default function SelfEmployedPage() {
               {isDirector && (
                 <>
                   <div>
-                    <label className="block text-xs text-[#7a8599] mb-1.5">Director Salary (£/yr)</label>
+                    <label className="block text-xs text-[var(--color-muted)] mb-1.5">Director Salary (£/yr)</label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7a8599]">£</span>
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-muted)]">£</span>
                       <input
                         type="number"
                         className="w-full pl-9"
@@ -172,19 +172,19 @@ export default function SelfEmployedPage() {
                         onChange={(e) => setDirectorSalary(parseFloat(e.target.value) || 0)}
                       />
                     </div>
-                    <p className="text-xs text-[#7a8599] mt-1">Tip: set to £12,570 to avoid NI whilst using full personal allowance.</p>
+                    <p className="text-xs text-[var(--color-muted)] mt-1">Tip: set to £12,570 to avoid NI whilst using full personal allowance.</p>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
-                    <div className="rounded-xl bg-[#1c2433] p-3">
-                      <div className="text-xs text-[#7a8599] mb-1">Corp Tax Rate</div>
+                    <div className="rounded-xl bg-[var(--color-surface-2)] p-3">
+                      <div className="text-xs text-[var(--color-muted)] mb-1">Corp Tax Rate</div>
                       <div className="font-bold font-num">{(corpTaxRate * 100).toFixed(1)}%</div>
                     </div>
-                    <div className="rounded-xl bg-[#1c2433] p-3">
-                      <div className="text-xs text-[#7a8599] mb-1">Corp Tax Bill</div>
+                    <div className="rounded-xl bg-[var(--color-surface-2)] p-3">
+                      <div className="text-xs text-[var(--color-muted)] mb-1">Corp Tax Bill</div>
                       <div className="font-bold font-num text-[#ef4444]">{fmt(corpTax)}</div>
                     </div>
-                    <div className="rounded-xl bg-[#1c2433] p-3">
-                      <div className="text-xs text-[#7a8599] mb-1">Dividend</div>
+                    <div className="rounded-xl bg-[var(--color-surface-2)] p-3">
+                      <div className="text-xs text-[var(--color-muted)] mb-1">Dividend</div>
                       <div className="font-bold font-num text-[#22c55e]">{fmt(dividendIncome)}</div>
                     </div>
                   </div>
@@ -195,14 +195,14 @@ export default function SelfEmployedPage() {
 
           {/* Results */}
           <div className="space-y-5">
-            <div className="rounded-2xl border border-[#2a3447] bg-[#141920] overflow-hidden">
-              <div className="px-6 py-4 border-b border-[#2a3447]">
+            <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
+              <div className="px-6 py-4 border-b border-[var(--color-border)]">
                 <h2 className="font-bold" style={{ fontFamily: 'var(--font-syne)' }}>Tax Breakdown</h2>
               </div>
-              <div className="divide-y divide-[#2a3447]/50">
+              <div className="divide-y divide-[var(--color-border)]/50">
                 {rows.map((r) => (
-                  <div key={r.label} className={`px-6 py-3 flex items-center justify-between ${r.highlight ? 'bg-[#1c2433]' : ''}`}>
-                    <span className={`text-sm ${r.highlight ? 'font-semibold' : 'text-[#e8eaf0]'}`}>{r.label}</span>
+                  <div key={r.label} className={`px-6 py-3 flex items-center justify-between ${r.highlight ? 'bg-[var(--color-surface-2)]' : ''}`}>
+                    <span className={`text-sm ${r.highlight ? 'font-semibold' : 'text-[var(--color-text)]'}`}>{r.label}</span>
                     <span
                       className={`font-mono text-sm ${
                         r.big ? 'text-lg font-bold' : ''
@@ -220,21 +220,21 @@ export default function SelfEmployedPage() {
               <h3 className="font-bold mb-1" style={{ fontFamily: 'var(--font-syne)', color: '#fb923c' }}>
                 Tax Reserve Pot
               </h3>
-              <p className="text-xs text-[#7a8599] mb-3">
+              <p className="text-xs text-[var(--color-muted)] mb-3">
                 Set aside this % of each invoice/payment for your Self-Assessment bill.
               </p>
               <div className="text-4xl font-bold font-num" style={{ color: '#fb923c' }}>
                 {Math.min(100, Math.round(recommendedReserve))}%
               </div>
-              <p className="text-xs text-[#7a8599] mt-2">
+              <p className="text-xs text-[var(--color-muted)] mt-2">
                 That&apos;s roughly {fmt((income * Math.min(100, recommendedReserve)) / 100 / 12)}/month set aside.
               </p>
             </div>
           </div>
         </div>
 
-        <footer className="mt-12 text-center text-xs text-[#7a8599]">
-          TSBudget provides estimates for guidance only. Consult a qualified accountant for regulated financial advice.
+        <footer className="mt-12 text-center text-xs text-[var(--color-muted)]">
+          NetWorth provides estimates for guidance only. Consult a qualified accountant for regulated financial advice.
         </footer>
       </main>
     </>

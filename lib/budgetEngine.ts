@@ -1,4 +1,4 @@
-import type { BudgetAllocation, BudgetCategory, BudgetMethod } from '@/types/finance'
+﻿import type { BudgetAllocation, BudgetCategory, BudgetMethod } from '@/types/finance'
 
 function makeId() {
   return Math.random().toString(36).slice(2, 9)
@@ -26,7 +26,7 @@ export function createDefaultCategories(): BudgetCategory[] {
 
 export function apply5030_20(netMonthly: number, categories: BudgetCategory[]): BudgetCategory[] {
   const needsBudget = netMonthly * 0.5
-  const wantsBudget = netMonthly * 0.3
+  const wanNetWorth = netMonthly * 0.3
   const savingsBudget = netMonthly * 0.2
 
   const needs = categories.filter((c) => c.type === 'need')
@@ -41,7 +41,7 @@ export function apply5030_20(netMonthly: number, categories: BudgetCategory[]): 
 
   return [
     ...distributeEvenly(needs, needsBudget),
-    ...distributeEvenly(wants, wantsBudget),
+    ...distributeEvenly(wants, wanNetWorth),
     ...distributeEvenly(savings, savingsBudget),
   ]
 }

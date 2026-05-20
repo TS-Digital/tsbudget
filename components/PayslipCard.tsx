@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import type { TaxBreakdown, PayFrequency } from '@/types/finance'
 
@@ -48,9 +48,9 @@ export default function PayslipCard({ breakdown, frequency }: Props) {
   ]
 
   return (
-    <div className="rounded-2xl border border-[#2a3447] bg-[#141920] overflow-hidden">
+    <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-[#2a3447] flex items-center justify-between">
+      <div className="px-6 py-4 border-b border-[var(--color-border)] flex items-center justify-between">
         <h2 className="font-bold text-lg" style={{ fontFamily: 'var(--font-syne)' }}>
           Payslip Breakdown
         </h2>
@@ -61,31 +61,31 @@ export default function PayslipCard({ breakdown, frequency }: Props) {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#2a3447]">
-              <th className="text-left px-6 py-3 text-[#7a8599] font-medium">Item</th>
-              <th className="text-right px-4 py-3 text-[#7a8599] font-medium">{freqLabel}</th>
-              <th className="text-right px-6 py-3 text-[#7a8599] font-medium">Annual</th>
+            <tr className="border-b border-[var(--color-border)]">
+              <th className="text-left px-6 py-3 text-[var(--color-muted)] font-medium">Item</th>
+              <th className="text-right px-4 py-3 text-[var(--color-muted)] font-medium">{freqLabel}</th>
+              <th className="text-right px-6 py-3 text-[var(--color-muted)] font-medium">Annual</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((row) => (
               <tr
                 key={row.label}
-                className={`border-b border-[#2a3447]/50 ${row.highlight ? 'bg-[#1c2433]' : ''}`}
+                className={`border-b border-[var(--color-border)]/50 ${row.highlight ? 'bg-[var(--color-surface-2)]' : ''}`}
               >
-                <td className={`px-6 py-3 font-medium ${row.highlight ? 'text-[#c9a84c]' : 'text-[#e8eaf0]'}`}>
+                <td className={`px-6 py-3 font-medium ${row.highlight ? 'text-[#c9a84c]' : 'text-[var(--color-text)]'}`}>
                   {row.label}
                 </td>
                 <td
                   className={`px-4 py-3 text-right font-mono text-sm ${
-                    row.deduction ? 'text-[#ef4444]' : row.highlight ? 'text-[#22c55e] font-bold' : 'text-[#e8eaf0]'
+                    row.deduction ? 'text-[#ef4444]' : row.highlight ? 'text-[#22c55e] font-bold' : 'text-[var(--color-text)]'
                   }`}
                 >
                   {row.deduction ? `−${fmt(Math.abs(row.period))}` : fmt(row.period)}
                 </td>
                 <td
                   className={`px-6 py-3 text-right font-mono text-sm ${
-                    row.deduction ? 'text-[#ef4444]' : row.highlight ? 'text-[#22c55e] font-bold' : 'text-[#e8eaf0]'
+                    row.deduction ? 'text-[#ef4444]' : row.highlight ? 'text-[#22c55e] font-bold' : 'text-[var(--color-text)]'
                   }`}
                 >
                   {row.deduction ? `−${fmt(Math.abs(row.annual))}` : fmt(row.annual)}
@@ -97,15 +97,15 @@ export default function PayslipCard({ breakdown, frequency }: Props) {
       </div>
 
       {/* Rates */}
-      <div className="px-6 py-4 grid grid-cols-2 gap-4 border-t border-[#2a3447]">
+      <div className="px-6 py-4 grid grid-cols-2 gap-4 border-t border-[var(--color-border)]">
         <div>
-          <div className="text-xs text-[#7a8599] mb-1">Effective Rate</div>
+          <div className="text-xs text-[var(--color-muted)] mb-1">Effective Rate</div>
           <div className="text-2xl font-bold font-num" style={{ color: '#c9a84c' }}>
             {pct(b.effectiveRate)}
           </div>
         </div>
         <div>
-          <div className="text-xs text-[#7a8599] mb-1">Marginal Rate</div>
+          <div className="text-xs text-[var(--color-muted)] mb-1">Marginal Rate</div>
           <div className="text-2xl font-bold font-num" style={{ color: '#c9a84c' }}>
             {pct(b.marginalRate)}
           </div>

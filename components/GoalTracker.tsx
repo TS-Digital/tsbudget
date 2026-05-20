@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/client'
@@ -92,7 +92,7 @@ export default function GoalTracker() {
   }
 
   return (
-    <div className="rounded-2xl border border-[#2a3447] bg-[#141920] p-6">
+    <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
       <div className="flex items-center justify-between mb-5">
         <div>
           <h2 className="font-bold text-lg" style={{ fontFamily: 'var(--font-syne)' }}>
@@ -106,7 +106,7 @@ export default function GoalTracker() {
         </div>
         <button
           onClick={() => setShowAdd((v) => !v)}
-          className="text-sm px-3 py-1.5 rounded-lg border border-[#2a3447] hover:border-[#c9a84c]/50 text-[#7a8599] hover:text-[#c9a84c] transition-colors"
+          className="text-sm px-3 py-1.5 rounded-lg border border-[var(--color-border)] hover:border-[#c9a84c]/50 text-[var(--color-muted)] hover:text-[#c9a84c] transition-colors"
         >
           + Add Goal
         </button>
@@ -128,7 +128,7 @@ export default function GoalTracker() {
               { label: '£/month', key: 'monthlyContribution' as const },
             ].map((f) => (
               <div key={f.key}>
-                <label className="block text-xs text-[#7a8599] mb-1">{f.label}</label>
+                <label className="block text-xs text-[var(--color-muted)] mb-1">{f.label}</label>
                 <input
                   type="number"
                   className="w-full"
@@ -141,7 +141,7 @@ export default function GoalTracker() {
           </div>
           <button
             onClick={addGoal}
-            className="px-4 py-2 rounded-lg text-sm font-semibold text-[#0d1017]"
+            className="px-4 py-2 rounded-lg text-sm font-semibold text-[var(--color-bg)]"
             style={{ background: '#c9a84c' }}
           >
             Add Goal
@@ -150,9 +150,9 @@ export default function GoalTracker() {
       )}
 
       {loading ? (
-        <div className="py-8 text-center text-sm text-[#7a8599]">Loading goals…</div>
+        <div className="py-8 text-center text-sm text-[var(--color-muted)]">Loading goals…</div>
       ) : goals.length === 0 ? (
-        <div className="py-8 text-center text-sm text-[#7a8599]">No goals yet. Add one above.</div>
+        <div className="py-8 text-center text-sm text-[var(--color-muted)]">No goals yet. Add one above.</div>
       ) : (
         <div className="space-y-5">
           {goals.map((g) => {
@@ -165,24 +165,24 @@ export default function GoalTracker() {
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-medium text-sm">{g.name}</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-[#7a8599]">
+                    <span className="text-xs text-[var(--color-muted)]">
                       {fmt(g.currentAmount)} / {fmt(g.targetAmount)}
                     </span>
                     <button
                       onClick={() => removeGoal(g.id)}
-                      className="text-[#7a8599] hover:text-[#ef4444] text-xs transition-colors"
+                      className="text-[var(--color-muted)] hover:text-[#ef4444] text-xs transition-colors"
                     >
                       ×
                     </button>
                   </div>
                 </div>
-                <div className="w-full h-2.5 rounded-full bg-[#2a3447] overflow-hidden">
+                <div className="w-full h-2.5 rounded-full bg-[var(--color-border)] overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-500"
                     style={{ width: `${pct}%`, background: pct >= 100 ? '#22c55e' : '#c9a84c' }}
                   />
                 </div>
-                <div className="flex justify-between text-xs text-[#7a8599] mt-1.5">
+                <div className="flex justify-between text-xs text-[var(--color-muted)] mt-1.5">
                   <span>{pct.toFixed(0)}% complete</span>
                   {monthsLeft !== null && (
                     <span>
@@ -197,7 +197,7 @@ export default function GoalTracker() {
       )}
 
       {!userId && (
-        <p className="mt-5 text-xs text-[#7a8599] border-t border-[#2a3447] pt-4">
+        <p className="mt-5 text-xs text-[var(--color-muted)] border-t border-[var(--color-border)] pt-4">
           Sign in to save goals across devices.
         </p>
       )}

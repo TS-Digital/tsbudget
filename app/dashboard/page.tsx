@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 import Nav from '@/components/Nav'
@@ -73,11 +73,11 @@ export default function DashboardPage() {
           <h1 className="text-3xl font-extrabold mb-2" style={{ fontFamily: 'var(--font-syne)' }}>
             Financial Dashboard
           </h1>
-          <p className="text-[#7a8599]">Your monthly snapshot, projections, and AI-powered tips.</p>
+          <p className="text-[var(--color-muted)]">Your monthly snapshot, projections, and AI-powered tips.</p>
         </div>
 
         {/* Snapshot inputs */}
-        <div className="rounded-2xl border border-[#2a3447] bg-[#141920] p-6 mb-6">
+        <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-bold" style={{ fontFamily: 'var(--font-syne)' }}>
               Monthly Snapshot
@@ -86,7 +86,7 @@ export default function DashboardPage() {
               <span className="text-xs text-[#22c55e]">Loaded from saved budget</span>
             )}
             {userId && !budgetLoaded && (
-              <span className="text-xs text-[#7a8599]">No saved budget yet — save one from the Budget page</span>
+              <span className="text-xs text-[var(--color-muted)]">No saved budget yet — save one from the Budget page</span>
             )}
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
@@ -96,7 +96,7 @@ export default function DashboardPage() {
               { label: 'Savings (£)', key: 'savings' as const },
             ].map((f) => (
               <div key={f.key}>
-                <label className="block text-xs text-[#7a8599] mb-1.5">{f.label}</label>
+                <label className="block text-xs text-[var(--color-muted)] mb-1.5">{f.label}</label>
                 <input
                   type="number"
                   className="w-full"
@@ -110,7 +110,7 @@ export default function DashboardPage() {
               </div>
             ))}
             <div>
-              <label className="block text-xs text-[#7a8599] mb-1.5">Biggest Expense</label>
+              <label className="block text-xs text-[var(--color-muted)] mb-1.5">Biggest Expense</label>
               <input
                 type="text"
                 className="w-full"
@@ -122,13 +122,13 @@ export default function DashboardPage() {
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[
-              { label: 'Net Income', value: fmt(snapshot.net), color: '#e8eaf0' },
+              { label: 'Net Income', value: fmt(snapshot.net), color: 'var(--color-text)' },
               { label: 'Fixed Costs', value: fmt(snapshot.committed), color: '#818cf8' },
               { label: 'Discretionary', value: fmt(discretionary), color: '#fb923c' },
               { label: 'Saved', value: fmt(snapshot.savings), color: '#22c55e' },
             ].map((s) => (
-              <div key={s.label} className="rounded-xl bg-[#1c2433] p-4">
-                <div className="text-xs text-[#7a8599] mb-1">{s.label}</div>
+              <div key={s.label} className="rounded-xl bg-[var(--color-surface-2)] p-4">
+                <div className="text-xs text-[var(--color-muted)] mb-1">{s.label}</div>
                 <div className="text-xl font-bold font-num" style={{ color: s.color }}>
                   {s.value}
                 </div>
@@ -136,7 +136,7 @@ export default function DashboardPage() {
             ))}
           </div>
 
-          <div className="mt-4 flex items-center gap-2 text-sm text-[#7a8599]">
+          <div className="mt-4 flex items-center gap-2 text-sm text-[var(--color-muted)]">
             <span>Savings rate:</span>
             <span
               className="font-bold font-num"
@@ -163,8 +163,8 @@ export default function DashboardPage() {
           biggestCategory={snapshot.biggestCategory}
         />
 
-        <footer className="mt-12 text-center text-xs text-[#7a8599]">
-          TSBudget provides estimates for guidance only. Consult a qualified accountant for
+        <footer className="mt-12 text-center text-xs text-[var(--color-muted)]">
+          NetWorth provides estimates for guidance only. Consult a qualified accountant for
           regulated financial advice.
         </footer>
       </main>

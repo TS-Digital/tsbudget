@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 
@@ -40,13 +40,13 @@ export default function AIInsightCard({ net, committed, savings, biggestCategory
           <h2 className="font-bold text-lg mb-1" style={{ fontFamily: 'var(--font-syne)', color: '#a5b4fc' }}>
             ✦ AI Budget Insight
           </h2>
-          <p className="text-xs text-[#7a8599]">Powered by Claude AI · Not regulated financial advice</p>
+          <p className="text-xs text-[var(--color-muted)]">Powered by Claude AI · Not regulated financial advice</p>
         </div>
         <button
           onClick={fetchTip}
           disabled={loading}
           className="shrink-0 px-4 py-2 rounded-lg text-sm font-semibold transition-all disabled:opacity-60 hover:scale-[1.02]"
-          style={{ background: '#818cf8', color: '#0d1017' }}
+          style={{ background: '#818cf8', color: 'var(--color-bg)' }}
         >
           {loading ? 'Thinking…' : tip ? 'Refresh' : 'Get Tips'}
         </button>
@@ -60,15 +60,15 @@ export default function AIInsightCard({ net, committed, savings, biggestCategory
             .split('\n')
             .filter((line) => line.trim().startsWith('•') || line.trim().startsWith('-'))
             .map((line, i) => (
-              <div key={i} className="flex items-start gap-2.5 text-sm text-[#e8eaf0]">
+              <div key={i} className="flex items-start gap-2.5 text-sm text-[var(--color-text)]">
                 <span className="text-[#818cf8] mt-0.5 shrink-0">•</span>
                 <span>{line.replace(/^[•\-]\s*/, '')}</span>
               </div>
             ))}
         </div>
       ) : (
-        <p className="text-sm text-[#7a8599]">
-          Click &quot;Get Tips&quot; and TSBudget AI will analyse your financial snapshot and give you 3
+        <p className="text-sm text-[var(--color-muted)]">
+          Click &quot;Get Tips&quot; and NetWorth AI will analyse your financial snapshot and give you 3
           personalised, actionable budgeting tips.
         </p>
       )}

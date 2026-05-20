@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -6,7 +6,7 @@ import { Suspense, useEffect, useMemo, useState } from 'react'
 import Nav from '@/components/Nav'
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/client'
 
-type AuthMode = 'signin' | 'signup'
+type AuthMode = 'signin' | 'signup' | 'forgot'
 
 export default function LoginPage() {
   return (
@@ -22,7 +22,7 @@ function LoginShell() {
       <Nav />
       <main className="flex-1">
         <section className="mx-auto min-h-[calc(100dvh-73px)] max-w-6xl px-4 py-10">
-          <div className="h-[520px] rounded-2xl border border-[#2a3447] bg-[#141920]" />
+          <div className="h-[520px] rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]" />
         </section>
       </main>
     </>
@@ -99,6 +99,25 @@ function LoginContent() {
     setLoading(false)
   }
 
+  async function handleForgotPassword(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    if (!supabase) return
+    setLoading(true)
+    setError(null)
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/callback?next=/auth/reset-password`,
+    })
+
+    if (error) {
+      setError(error.message)
+    } else {
+      setInfo('Reset email sent — check your inbox.')
+      setMode('signin')
+    }
+    setLoading(false)
+  }
+
   async function handleGoogle() {
     if (!supabase) return
 
@@ -125,7 +144,7 @@ function LoginContent() {
         <section className="mx-auto grid min-h-[calc(100dvh-73px)] max-w-6xl grid-cols-1 gap-8 px-4 py-10 lg:grid-cols-[1fr_420px] lg:items-center">
           <div className="max-w-2xl">
             <p className="mb-4 text-sm font-semibold uppercase tracking-[0.12em] text-[#c9a84c]">
-              TSBudget account
+              NetWorth account
             </p>
             <h1
               className="mb-5 text-4xl font-extrabold leading-tight sm:text-5xl"
@@ -133,7 +152,7 @@ function LoginContent() {
             >
               Save your budget, goals, and tax profile across pages.
             </h1>
-            <p className="max-w-xl text-base leading-relaxed text-[#7a8599]">
+            <p className="max-w-xl text-base leading-relaxed text-[var(--color-muted)]">
               Sign in once and the calculator, budget planner, and dashboard can keep working from
               the same saved numbers instead of starting fresh every time.
             </p>
@@ -144,46 +163,48 @@ function LoginContent() {
                 ['Budget plan', 'Save categories and monthly income for later.'],
                 ['Goals', 'Track targets from the dashboard.'],
               ].map(([title, copy]) => (
-                <div key={title} className="rounded-xl border border-[#2a3447] bg-[#141920] p-4">
+                <div key={title} className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
                   <div
-                    className="mb-1 text-sm font-bold text-[#e8eaf0]"
+                    className="mb-1 text-sm font-bold text-[var(--color-text)]"
                     style={{ fontFamily: 'var(--font-syne)' }}
                   >
                     {title}
                   </div>
-                  <p className="text-xs leading-relaxed text-[#7a8599]">{copy}</p>
+                  <p className="text-xs leading-relaxed text-[var(--color-muted)]">{copy}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="rounded-2xl border border-[#2a3447] bg-[#141920] shadow-2xl">
-            <div className="border-b border-[#2a3447] px-6 py-5">
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-2xl">
+            <div className="border-b border-[var(--color-border)] px-6 py-5">
               <h2 className="text-xl font-bold" style={{ fontFamily: 'var(--font-syne)' }}>
                 {mode === 'signin' ? 'Sign in' : 'Create account'}
               </h2>
-              <p className="mt-1 text-sm text-[#7a8599]">
-                {mode === 'signin' ? 'Welcome back.' : 'Start saving your TSBudget data.'}
+              <p className="mt-1 text-sm text-[var(--color-muted)]">
+                {mode === 'signin' ? 'Welcome back.' : 'Start saving your NetWorth data.'}
               </p>
             </div>
 
             <div className="space-y-5 p-6">
-              <div className="grid grid-cols-2 overflow-hidden rounded-xl border border-[#2a3447]">
-                {(['signin', 'signup'] as AuthMode[]).map((tab) => (
-                  <button
-                    key={tab}
-                    type="button"
-                    onClick={() => changeMode(tab)}
-                    className={`py-2.5 text-sm font-semibold transition-colors ${
-                      mode === tab
-                        ? 'bg-[#c9a84c]/15 text-[#c9a84c]'
-                        : 'text-[#7a8599] hover:bg-[#1c2433] hover:text-[#e8eaf0]'
-                    }`}
-                  >
-                    {tab === 'signin' ? 'Sign in' : 'Sign up'}
-                  </button>
-                ))}
-              </div>
+              {mode !== 'forgot' && (
+                <div className="grid grid-cols-2 overflow-hidden rounded-xl border border-[var(--color-border)]">
+                  {(['signin', 'signup'] as AuthMode[]).map((tab) => (
+                    <button
+                      key={tab}
+                      type="button"
+                      onClick={() => changeMode(tab as AuthMode)}
+                      className={`py-2.5 text-sm font-semibold transition-colors ${
+                        mode === tab
+                          ? 'bg-[#c9a84c]/15 text-[#c9a84c]'
+                          : 'text-[var(--color-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-text)]'
+                      }`}
+                    >
+                      {tab === 'signin' ? 'Sign in' : 'Sign up'}
+                    </button>
+                  ))}
+                </div>
+              )}
 
               {!isSupabaseConfigured && (
                 <div className="rounded-xl border border-[#ef4444]/30 bg-[#ef4444]/8 p-3 text-sm text-[#ef4444]">
@@ -204,69 +225,113 @@ function LoginContent() {
                 </div>
               )}
 
-              <form onSubmit={handleEmailAuth} className="space-y-4">
-                {mode === 'signup' && (
+              {mode === 'forgot' ? (
+                <form onSubmit={handleForgotPassword} className="space-y-4">
+                  <p className="text-sm text-[var(--color-muted)]">Enter your email and we&apos;ll send a reset link.</p>
                   <div>
-                    <label className="mb-1.5 block text-xs text-[#7a8599]">Full name</label>
+                    <label className="mb-1.5 block text-xs text-[var(--color-muted)]">Email</label>
                     <input
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="Your name"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@example.com"
                       required
                     />
                   </div>
-                )}
+                  <button
+                    type="submit"
+                    disabled={loading || !isSupabaseConfigured}
+                    className="w-full rounded-xl px-4 py-3 text-sm font-bold text-[var(--color-bg)] transition-all hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
+                    style={{ background: '#c9a84c', fontFamily: 'var(--font-syne)' }}
+                  >
+                    {loading ? 'Sending...' : 'Send Reset Email'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => changeMode('signin')}
+                    className="w-full text-sm text-[var(--color-muted)] hover:text-[var(--color-text)] transition-colors"
+                  >
+                    Back to sign in
+                  </button>
+                </form>
+              ) : (
+                <form onSubmit={handleEmailAuth} className="space-y-4">
+                  {mode === 'signup' && (
+                    <div>
+                      <label className="mb-1.5 block text-xs text-[var(--color-muted)]">Full name</label>
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Your name"
+                        required
+                      />
+                    </div>
+                  )}
 
-                <div>
-                  <label className="mb-1.5 block text-xs text-[#7a8599]">Email</label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    required
-                  />
-                </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs text-[var(--color-muted)]">Email</label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@example.com"
+                      required
+                    />
+                  </div>
 
-                <div>
-                  <label className="mb-1.5 block text-xs text-[#7a8599]">Password</label>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder={mode === 'signup' ? 'At least 6 characters' : 'Your password'}
-                    minLength={6}
-                    required
-                  />
-                </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs text-[var(--color-muted)]">Password</label>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder={mode === 'signup' ? 'At least 6 characters' : 'Your password'}
+                      minLength={6}
+                      required
+                    />
+                    {mode === 'signin' && (
+                      <button
+                        type="button"
+                        onClick={() => changeMode('forgot')}
+                        className="mt-1.5 text-xs text-[var(--color-muted)] hover:text-[#c9a84c] transition-colors"
+                      >
+                        Forgot password?
+                      </button>
+                    )}
+                  </div>
 
-                <button
-                  type="submit"
-                  disabled={loading || !isSupabaseConfigured}
-                  className="w-full rounded-xl px-4 py-3 text-sm font-bold text-[#0d1017] transition-all hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
-                  style={{ background: '#c9a84c', fontFamily: 'var(--font-syne)' }}
-                >
-                  {loading ? 'Please wait...' : mode === 'signin' ? 'Sign in' : 'Create account'}
-                </button>
-              </form>
+                  <button
+                    type="submit"
+                    disabled={loading || !isSupabaseConfigured}
+                    className="w-full rounded-xl px-4 py-3 text-sm font-bold text-[var(--color-bg)] transition-all hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
+                    style={{ background: '#c9a84c', fontFamily: 'var(--font-syne)' }}
+                  >
+                    {loading ? 'Please wait...' : mode === 'signin' ? 'Sign in' : 'Create account'}
+                  </button>
+                </form>
+              )}
 
-              <div className="flex items-center gap-3">
-                <div className="h-px flex-1 bg-[#2a3447]" />
-                <span className="text-xs text-[#7a8599]">or</span>
-                <div className="h-px flex-1 bg-[#2a3447]" />
-              </div>
+              {mode !== 'forgot' && (
+                <>
+                  <div className="flex items-center gap-3">
+                    <div className="h-px flex-1 bg-[var(--color-border)]" />
+                    <span className="text-xs text-[var(--color-muted)]">or</span>
+                    <div className="h-px flex-1 bg-[var(--color-border)]" />
+                  </div>
 
-              <button
-                type="button"
-                onClick={handleGoogle}
-                disabled={loading || !isSupabaseConfigured}
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#2a3447] px-4 py-3 text-sm font-semibold text-[#e8eaf0] transition-all hover:border-[#c9a84c]/40 hover:bg-[#1c2433] disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                Continue with Google
-              </button>
+                  <button
+                    type="button"
+                    onClick={handleGoogle}
+                    disabled={loading || !isSupabaseConfigured}
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--color-border)] px-4 py-3 text-sm font-semibold text-[var(--color-text)] transition-all hover:border-[#c9a84c]/40 hover:bg-[var(--color-surface-2)] disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    Continue with Google
+                  </button>
+                </>
+              )}
 
-              <p className="text-center text-xs text-[#7a8599]">
+              <p className="text-center text-xs text-[var(--color-muted)]">
                 Prefer to keep browsing?{' '}
                 <Link href="/" className="font-semibold text-[#c9a84c] hover:text-[#e2c06e]">
                   Go back home

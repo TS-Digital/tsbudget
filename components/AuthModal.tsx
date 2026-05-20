@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -89,15 +89,15 @@ export default function AuthModal({ open, onClose, onSuccess }: Props) {
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
       onClick={(e) => { if (e.target === overlayRef.current) onClose() }}
     >
-      <div className="w-full max-w-sm rounded-2xl border border-[#2a3447] bg-[#141920] shadow-2xl">
+      <div className="w-full max-w-sm rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-[#2a3447]">
+        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-[var(--color-border)]">
           <h2 className="font-bold text-lg" style={{ fontFamily: 'var(--font-syne)' }}>
             {tab === 'signin' ? 'Sign in' : 'Create account'}
           </h2>
           <button
             onClick={onClose}
-            className="text-[#7a8599] hover:text-[#e8eaf0] text-xl leading-none transition-colors"
+            className="text-[var(--color-muted)] hover:text-[var(--color-text)] text-xl leading-none transition-colors"
           >
             ×
           </button>
@@ -105,13 +105,13 @@ export default function AuthModal({ open, onClose, onSuccess }: Props) {
 
         <div className="p-6 space-y-4">
           {/* Tabs */}
-          <div className="flex rounded-xl overflow-hidden border border-[#2a3447]">
+          <div className="flex rounded-xl overflow-hidden border border-[var(--color-border)]">
             {(['signin', 'signup'] as Tab[]).map((t) => (
               <button
                 key={t}
                 onClick={() => changeTab(t)}
                 className={`flex-1 py-2 text-sm font-medium transition-colors ${
-                  tab === t ? 'bg-[#c9a84c]/15 text-[#c9a84c]' : 'text-[#7a8599] hover:text-[#e8eaf0]'
+                  tab === t ? 'bg-[#c9a84c]/15 text-[#c9a84c]' : 'text-[var(--color-muted)] hover:text-[var(--color-text)]'
                 }`}
               >
                 {t === 'signin' ? 'Sign In' : 'Sign Up'}
@@ -133,7 +133,7 @@ export default function AuthModal({ open, onClose, onSuccess }: Props) {
           <form onSubmit={handleEmailAuth} className="space-y-3">
             {tab === 'signup' && (
               <div>
-                <label className="block text-xs text-[#7a8599] mb-1.5">Full Name</label>
+                <label className="block text-xs text-[var(--color-muted)] mb-1.5">Full Name</label>
                 <input
                   type="text"
                   placeholder="Your name"
@@ -144,7 +144,7 @@ export default function AuthModal({ open, onClose, onSuccess }: Props) {
               </div>
             )}
             <div>
-              <label className="block text-xs text-[#7a8599] mb-1.5">Email</label>
+              <label className="block text-xs text-[var(--color-muted)] mb-1.5">Email</label>
               <input
                 type="email"
                 placeholder="you@example.com"
@@ -154,7 +154,7 @@ export default function AuthModal({ open, onClose, onSuccess }: Props) {
               />
             </div>
             <div>
-              <label className="block text-xs text-[#7a8599] mb-1.5">Password</label>
+              <label className="block text-xs text-[var(--color-muted)] mb-1.5">Password</label>
               <input
                 type="password"
                 placeholder={tab === 'signup' ? 'At least 6 characters' : '••••••••'}
@@ -168,7 +168,7 @@ export default function AuthModal({ open, onClose, onSuccess }: Props) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 rounded-xl font-bold text-sm text-[#0d1017] disabled:opacity-60 transition-all hover:scale-[1.01]"
+              className="w-full py-2.5 rounded-xl font-bold text-sm text-[var(--color-bg)] disabled:opacity-60 transition-all hover:scale-[1.01]"
               style={{ background: '#c9a84c', fontFamily: 'var(--font-syne)' }}
             >
               {loading ? 'Please wait…' : tab === 'signin' ? 'Sign In' : 'Create Account'}
@@ -176,15 +176,15 @@ export default function AuthModal({ open, onClose, onSuccess }: Props) {
           </form>
 
           <div className="flex items-center gap-3">
-            <div className="flex-1 h-px bg-[#2a3447]" />
-            <span className="text-xs text-[#7a8599]">or</span>
-            <div className="flex-1 h-px bg-[#2a3447]" />
+            <div className="flex-1 h-px bg-[var(--color-border)]" />
+            <span className="text-xs text-[var(--color-muted)]">or</span>
+            <div className="flex-1 h-px bg-[var(--color-border)]" />
           </div>
 
           <button
             onClick={handleGoogle}
             disabled={loading}
-            className="w-full py-2.5 rounded-xl font-medium text-sm border border-[#2a3447] text-[#e8eaf0] hover:bg-[#1c2433] hover:border-[#c9a84c]/40 disabled:opacity-60 transition-all flex items-center justify-center gap-2"
+            className="w-full py-2.5 rounded-xl font-medium text-sm border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-surface-2)] hover:border-[#c9a84c]/40 disabled:opacity-60 transition-all flex items-center justify-center gap-2"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -195,7 +195,7 @@ export default function AuthModal({ open, onClose, onSuccess }: Props) {
             Continue with Google
           </button>
 
-          <p className="text-xs text-[#7a8599] text-center">
+          <p className="text-xs text-[var(--color-muted)] text-center">
             Your data is only used to save your budgets and goals. We never share it.
           </p>
         </div>

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useCallback, useEffect } from 'react'
 import Link from 'next/link'
@@ -34,7 +34,7 @@ const STUDENT_LOANS: { value: StudentLoanPlan; label: string }[] = [
 ]
 
 function Label({ children }: { children: React.ReactNode }) {
-  return <label className="block text-xs font-medium text-[#7a8599] mb-1.5">{children}</label>
+  return <label className="block text-xs font-medium text-[var(--color-muted)] mb-1.5">{children}</label>
 }
 
 function Field({ children }: { children: React.ReactNode }) {
@@ -149,12 +149,12 @@ export default function CalculatorPage() {
           <h1 className="text-3xl font-extrabold mb-2" style={{ fontFamily: 'var(--font-syne)' }}>
             UK Tax Calculator
           </h1>
-          <p className="text-[#7a8599]">2025/26 tax year · Income tax, NI, student loans, pension</p>
+          <p className="text-[var(--color-muted)]">2025/26 tax year · Income tax, NI, student loans, pension</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Input panel */}
-          <div className="rounded-2xl border border-[#2a3447] bg-[#141920] p-6 space-y-5">
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 space-y-5">
             <h2 className="font-bold text-lg mb-4" style={{ fontFamily: 'var(--font-syne)' }}>
               Your Details
             </h2>
@@ -177,7 +177,7 @@ export default function CalculatorPage() {
             <Field>
               <Label>Gross Annual Income (£)</Label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#7a8599]">£</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-muted)]">£</span>
                 <input
                   type="number"
                   className="w-full pl-9"
@@ -227,7 +227,7 @@ export default function CalculatorPage() {
                 value={form.pensionPct}
                 onChange={(e) => set('pensionPct', parseFloat(e.target.value))}
               />
-              <div className="flex justify-between text-xs text-[#7a8599] mt-1">
+              <div className="flex justify-between text-xs text-[var(--color-muted)] mt-1">
                 <span>0%</span><span>15%</span><span>30%</span>
               </div>
             </Field>
@@ -255,7 +255,7 @@ export default function CalculatorPage() {
                   checked={form.scotland}
                   onChange={(e) => set('scotland', e.target.checked)}
                 />
-                <div className="w-10 h-6 bg-[#2a3447] rounded-full peer-checked:bg-[#c9a84c] transition-colors" />
+                <div className="w-10 h-6 bg-[var(--color-border)] rounded-full peer-checked:bg-[#c9a84c] transition-colors" />
                 <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-4" />
               </div>
               <span className="text-sm font-medium">Scotland income tax rates</span>
@@ -266,7 +266,7 @@ export default function CalculatorPage() {
             <button
               onClick={calculate}
               disabled={loading}
-              className="w-full py-3 rounded-xl font-bold text-[#0d1017] transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full py-3 rounded-xl font-bold text-[var(--color-bg)] transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed"
               style={{ background: '#c9a84c', fontFamily: 'var(--font-syne)' }}
             >
               {loading ? 'Calculating…' : 'Calculate Take-Home Pay'}
@@ -278,7 +278,7 @@ export default function CalculatorPage() {
                 <button
                   onClick={saveTaxProfile}
                   disabled={saveStatus === 'saving'}
-                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#2a3447] hover:border-[#c9a84c]/50 text-[#7a8599] hover:text-[#c9a84c] transition-colors disabled:opacity-60"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[var(--color-border)] hover:border-[#c9a84c]/50 text-[var(--color-muted)] hover:text-[#c9a84c] transition-colors disabled:opacity-60"
                 >
                   {saveStatus === 'saving' ? 'Saving…' : 'Save Tax Profile'}
                 </button>
@@ -286,7 +286,7 @@ export default function CalculatorPage() {
                 {saveStatus === 'error' && <span className="text-sm text-[#ef4444]">Save failed</span>}
               </div>
             ) : (
-              <p className="text-xs text-[#7a8599]">
+              <p className="text-xs text-[var(--color-muted)]">
                 <Link href="/login?next=/calculator" className="font-semibold text-[#c9a84c] hover:text-[#e2c06e]">
                   Sign in
                 </Link>{' '}
@@ -303,10 +303,10 @@ export default function CalculatorPage() {
                 <PayslipCard breakdown={result} frequency={form.payFrequency} />
               </>
             ) : (
-              <div className="h-full min-h-64 rounded-2xl border border-[#2a3447] bg-[#141920] flex flex-col items-center justify-center text-center p-8">
+              <div className="h-full min-h-64 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] flex flex-col items-center justify-center text-center p-8">
                 <div className="text-4xl mb-4" style={{ color: '#c9a84c' }}>£</div>
-                <p className="text-[#7a8599]">
-                  Fill in your details and click <strong className="text-[#e8eaf0]">Calculate</strong> to see your
+                <p className="text-[var(--color-muted)]">
+                  Fill in your details and click <strong className="text-[var(--color-text)]">Calculate</strong> to see your
                   take-home pay breakdown.
                 </p>
               </div>
@@ -314,8 +314,8 @@ export default function CalculatorPage() {
           </div>
         </div>
 
-        <footer className="mt-12 text-center text-xs text-[#7a8599]">
-          TSBudget provides estimates for guidance only. Consult a qualified accountant for regulated financial advice.
+        <footer className="mt-12 text-center text-xs text-[var(--color-muted)]">
+          NetWorth provides estimates for guidance only. Consult a qualified accountant for regulated financial advice.
         </footer>
       </main>
     </>

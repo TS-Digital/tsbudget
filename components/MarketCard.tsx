@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 export interface MarketQuote {
   symbol: string
@@ -44,8 +44,8 @@ export default function MarketCard({ quote }: Props) {
     >
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="min-w-0">
-          <div className="text-xs text-[#7a8599] truncate font-mono">{quote.symbol}</div>
-          <div className="text-sm font-medium text-[#e8eaf0] truncate leading-tight mt-0.5">
+          <div className="text-xs text-[var(--color-muted)] truncate font-mono">{quote.symbol}</div>
+          <div className="text-sm font-medium text-[var(--color-text)] truncate leading-tight mt-0.5">
             {quote.name}
           </div>
         </div>

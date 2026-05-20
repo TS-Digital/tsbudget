@@ -101,7 +101,7 @@ export function calculateTax(input: TaxInput): TaxBreakdown {
     : calcIncomeTax(taxableIncome, bands)
 
   const nationalInsurance =
-    employmentType === 'self_employed' || employmentType === 'director'
+    employmentType === 'self_employed'
       ? calcNISelfEmployed(grossIncome)
       : calcNIEmployee(grossIncome)
 

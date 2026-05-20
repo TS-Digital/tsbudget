@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk'
+﻿import Anthropic from '@anthropic-ai/sdk'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   const message = await client.messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 300,
-    system: `You are TSBudget AI, a UK-focused personal finance assistant.
+    system: `You are NetWorth AI, a UK-focused personal finance assistant.
 You help people understand their take-home pay, budget their money, and make
 smarter financial decisions. Always give practical, concise advice in exactly 3 bullet
 points (use • as bullet). Never give regulated financial advice. Tone: clear, warm, direct.

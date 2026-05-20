@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, ResponsiveContainer,
@@ -23,35 +23,35 @@ const RISK_BG: Record<string, string> = {
 
 export default function AssetComparison() {
   return (
-    <div className="rounded-2xl border border-[#2a3447] bg-[#141920] p-6">
+    <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
       <h2 className="font-bold text-lg mb-1" style={{ fontFamily: 'var(--font-syne)' }}>
         Asset Class Comparison
       </h2>
-      <p className="text-xs text-[#7a8599] mb-5">
+      <p className="text-xs text-[var(--color-muted)] mb-5">
         Historical average annual returns. Past performance does not guarantee future results.
       </p>
 
       <ResponsiveContainer width="100%" height={260}>
         <BarChart data={ASSETS} layout="vertical" margin={{ left: 8, right: 40 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#2a3447" horizontal={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" horizontal={false} />
           <XAxis
             type="number"
             domain={[0, 22]}
-            tick={{ fontSize: 11, fill: '#7a8599' }}
+            tick={{ fontSize: 11, fill: 'var(--color-muted)' }}
             tickFormatter={(v) => `${v}%`}
           />
           <YAxis
             type="category"
             dataKey="name"
             width={96}
-            tick={{ fontSize: 11, fill: '#e8eaf0' }}
+            tick={{ fontSize: 11, fill: 'var(--color-text)' }}
           />
           <Tooltip
-            contentStyle={{ background: '#1c2433', border: '1px solid #2a3447', borderRadius: '8px', color: '#e8eaf0', fontSize: '12px' }}
+            contentStyle={{ background: 'var(--color-surface-2)', border: '1px solid #2a3447', borderRadius: '8px', color: 'var(--color-text)', fontSize: '12px' }}
             formatter={(v) => [`${v}% avg annual return`]}
             cursor={{ fill: 'rgba(255,255,255,0.03)' }}
           />
-          <Bar dataKey="annualReturn" radius={[0, 4, 4, 0]} label={{ position: 'right', fontSize: 11, fill: '#7a8599', formatter: (v: unknown) => `${v}%` }}>
+          <Bar dataKey="annualReturn" radius={[0, 4, 4, 0]} label={{ position: 'right', fontSize: 11, fill: 'var(--color-muted)', formatter: (v: unknown) => `${v}%` }}>
             {ASSETS.map((entry) => (
               <Cell key={entry.name} fill={entry.riskColor} fillOpacity={0.8} />
             ))}
@@ -73,9 +73,9 @@ export default function AssetComparison() {
         ))}
       </div>
 
-      <p className="text-xs text-[#7a8599] mt-4">
+      <p className="text-xs text-[var(--color-muted)] mt-4">
         ⚠ Bitcoin returns shown for data purposes only. Crypto is highly volatile and speculative.
-        TSBudget does not recommend any specific investment.
+        NetWorth does not recommend any specific investment.
       </p>
     </div>
   )

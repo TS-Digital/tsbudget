@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useMemo } from 'react'
 import {
@@ -108,33 +108,33 @@ export default function InvestCalculator({ defaultMonthly = 200 }: { defaultMont
   const sipPBonus = wrapper === 'sipp' ? (lumpSum + monthly * years * 12) * 0.25 : 0
 
   return (
-    <div className="rounded-2xl border border-[#2a3447] bg-[#141920] p-6">
+    <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
       <h2 className="font-bold text-lg mb-1" style={{ fontFamily: 'var(--font-syne)' }}>
         &ldquo;What if I invested?&rdquo; Calculator
       </h2>
-      <p className="text-xs text-[#7a8599] mb-5">
+      <p className="text-xs text-[var(--color-muted)] mb-5">
         All projections use compound interest and historical average returns. Past performance ≠ future results.
       </p>
 
       {/* Inputs */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
         <div>
-          <label className="block text-xs text-[#7a8599] mb-1.5">Lump Sum (£)</label>
+          <label className="block text-xs text-[var(--color-muted)] mb-1.5">Lump Sum (£)</label>
           <input type="number" min={0} step={500} value={lumpSum}
             onChange={(e) => setLumpSum(parseFloat(e.target.value) || 0)} />
         </div>
         <div>
-          <label className="block text-xs text-[#7a8599] mb-1.5">Monthly (£)</label>
+          <label className="block text-xs text-[var(--color-muted)] mb-1.5">Monthly (£)</label>
           <input type="number" min={0} step={50} value={monthly}
             onChange={(e) => setMonthly(parseFloat(e.target.value) || 0)} />
         </div>
         <div>
-          <label className="block text-xs text-[#7a8599] mb-1.5">Years: {years}</label>
+          <label className="block text-xs text-[var(--color-muted)] mb-1.5">Years: {years}</label>
           <input type="range" min={1} max={40} step={1} value={years}
             onChange={(e) => setYears(parseInt(e.target.value))} />
         </div>
         <div>
-          <label className="block text-xs text-[#7a8599] mb-1.5">Annual Return</label>
+          <label className="block text-xs text-[var(--color-muted)] mb-1.5">Annual Return</label>
           <div className="text-lg font-bold font-num" style={{ color: '#c9a84c' }}>
             {asset.return}%
           </div>
@@ -143,7 +143,7 @@ export default function InvestCalculator({ defaultMonthly = 200 }: { defaultMont
 
       {/* Asset class */}
       <div className="mb-4">
-        <label className="block text-xs text-[#7a8599] mb-2">Asset Class</label>
+        <label className="block text-xs text-[var(--color-muted)] mb-2">Asset Class</label>
         <div className="flex flex-wrap gap-2">
           {ASSET_CLASSES.map((a, i) => (
             <button
@@ -152,7 +152,7 @@ export default function InvestCalculator({ defaultMonthly = 200 }: { defaultMont
               className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
                 assetIdx === i
                   ? 'border-[#c9a84c] bg-[#c9a84c]/15 text-[#c9a84c]'
-                  : 'border-[#2a3447] text-[#7a8599] hover:border-[#c9a84c]/40'
+                  : 'border-[var(--color-border)] text-[var(--color-muted)] hover:border-[#c9a84c]/40'
               }`}
             >
               {a.label} ({a.return}%)
@@ -168,7 +168,7 @@ export default function InvestCalculator({ defaultMonthly = 200 }: { defaultMont
 
       {/* Tax wrapper */}
       <div className="mb-5">
-        <label className="block text-xs text-[#7a8599] mb-2">Tax Wrapper</label>
+        <label className="block text-xs text-[var(--color-muted)] mb-2">Tax Wrapper</label>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           {WRAPPERS.map((w) => (
             <button
@@ -177,13 +177,13 @@ export default function InvestCalculator({ defaultMonthly = 200 }: { defaultMont
               className={`text-left p-3 rounded-xl border transition-all ${
                 wrapper === w.value
                   ? 'border-[#818cf8] bg-[#818cf8]/10'
-                  : 'border-[#2a3447] hover:border-[#818cf8]/40'
+                  : 'border-[var(--color-border)] hover:border-[#818cf8]/40'
               }`}
             >
-              <div className={`text-xs font-semibold mb-0.5 ${wrapper === w.value ? 'text-[#a5b4fc]' : 'text-[#e8eaf0]'}`}>
+              <div className={`text-xs font-semibold mb-0.5 ${wrapper === w.value ? 'text-[#a5b4fc]' : 'text-[var(--color-text)]'}`}>
                 {w.label}
               </div>
-              <div className="text-xs text-[#7a8599] leading-snug">{w.desc}</div>
+              <div className="text-xs text-[var(--color-muted)] leading-snug">{w.desc}</div>
             </button>
           ))}
         </div>
@@ -192,15 +192,15 @@ export default function InvestCalculator({ defaultMonthly = 200 }: { defaultMont
       {/* Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
         {[
-          { label: 'Contributed', value: fmt(contributed), color: '#e8eaf0' },
+          { label: 'Contributed', value: fmt(contributed), color: 'var(--color-text)' },
           { label: 'Final Value', value: fmt(finalValue), color: '#c9a84c' },
           { label: 'Growth', value: fmt(growth), color: '#22c55e' },
           wrapper === 'sipp'
             ? { label: 'Tax Relief Bonus', value: fmt(sipPBonus), color: '#818cf8' }
             : { label: 'vs Cash Savings', value: fmt(taxAdvantage), color: '#818cf8' },
         ].map((s) => (
-          <div key={s.label} className="rounded-xl bg-[#1c2433] p-3">
-            <div className="text-xs text-[#7a8599] mb-1">{s.label}</div>
+          <div key={s.label} className="rounded-xl bg-[var(--color-surface-2)] p-3">
+            <div className="text-xs text-[var(--color-muted)] mb-1">{s.label}</div>
             <div className="font-bold font-num text-lg leading-tight" style={{ color: s.color }}>
               {s.value}
             </div>
@@ -225,25 +225,25 @@ export default function InvestCalculator({ defaultMonthly = 200 }: { defaultMont
       {/* Chart */}
       <ResponsiveContainer width="100%" height={260}>
         <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#2a3447" />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
           <XAxis
             dataKey="year"
-            tick={{ fontSize: 11, fill: '#7a8599' }}
+            tick={{ fontSize: 11, fill: 'var(--color-muted)' }}
             tickFormatter={(v) => `Yr ${v}`}
           />
-          <YAxis tickFormatter={(v) => fmtK(v)} tick={{ fontSize: 11, fill: '#7a8599' }} width={60} />
+          <YAxis tickFormatter={(v) => fmtK(v)} tick={{ fontSize: 11, fill: 'var(--color-muted)' }} width={60} />
           <Tooltip
-            contentStyle={{ background: '#1c2433', border: '1px solid #2a3447', borderRadius: '8px', color: '#e8eaf0', fontSize: '12px' }}
+            contentStyle={{ background: 'var(--color-surface-2)', border: '1px solid #2a3447', borderRadius: '8px', color: 'var(--color-text)', fontSize: '12px' }}
             formatter={(v) => typeof v === 'number' ? fmt(v) : v}
             labelFormatter={(v) => `Year ${v}`}
           />
-          <Legend formatter={(v) => <span style={{ color: '#7a8599', fontSize: '12px' }}>{v}</span>} />
+          <Legend formatter={(v) => <span style={{ color: 'var(--color-muted)', fontSize: '12px' }}>{v}</span>} />
           <Line type="monotone" dataKey="investment" name={`${asset.label} (${wrapper.toUpperCase()})`}
             stroke="#c9a84c" strokeWidth={2} dot={false} />
           <Line type="monotone" dataKey="cash" name="Cash Savings (4.5%)"
             stroke="#818cf8" strokeWidth={1.5} strokeDasharray="4 2" dot={false} />
           <Line type="monotone" dataKey="contributed" name="Total Contributed"
-            stroke="#2a3447" strokeWidth={1} strokeDasharray="2 4" dot={false} />
+            stroke="var(--color-border)" strokeWidth={1} strokeDasharray="2 4" dot={false} />
         </LineChart>
       </ResponsiveContainer>
     </div>

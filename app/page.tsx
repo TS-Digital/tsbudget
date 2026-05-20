@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import Nav from '@/components/Nav'
 
 const features = [
@@ -46,13 +46,13 @@ export default function Home() {
       <main className="flex-1">
         {/* Hero */}
         <section className="mx-auto max-w-4xl px-4 pt-20 pb-16 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#2a3447] text-xs text-[#7a8599] mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[var(--color-border)] text-xs text-[var(--color-muted)] mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-pulse inline-block" />
             2025/26 Tax Year — updated to HMRC latest rates
           </div>
 
           <h1
-            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-6"
+            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-3"
             style={{ fontFamily: 'var(--font-syne)' }}
           >
             Know exactly what you{' '}
@@ -60,8 +60,12 @@ export default function Home() {
             <br />and where it should go.
           </h1>
 
-          <p className="text-lg text-[#7a8599] max-w-2xl mx-auto mb-10 leading-relaxed">
-            TSBudget calculates your UK after-tax pay, helps you allocate every pound, and gives
+          <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[var(--color-muted)] mb-7">
+            by TS Digital
+          </p>
+
+          <p className="text-lg text-[var(--color-muted)] max-w-2xl mx-auto mb-10 leading-relaxed">
+            NetWorth calculates your UK after-tax pay, helps you allocate every pound, and gives
             you an AI-powered plan to save and invest smarter — whether you&apos;re employed,
             self-employed, a director, on benefits, or studying.
           </p>
@@ -69,7 +73,7 @@ export default function Home() {
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/calculator"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-[#0d1017] transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-[var(--color-bg)] transition-all hover:scale-[1.02] active:scale-[0.98]"
               style={{ background: '#c9a84c' }}
             >
               Calculate my take-home pay
@@ -77,7 +81,7 @@ export default function Home() {
             </Link>
             <Link
               href="/budget"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold border border-[#2a3447] text-[#e8eaf0] hover:border-[#c9a84c]/50 hover:bg-[#1c2433] transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold border border-[var(--color-border)] text-[var(--color-text)] hover:border-[#c9a84c]/50 hover:bg-[var(--color-surface-2)] transition-all"
             >
               Plan my budget
             </Link>
@@ -91,7 +95,7 @@ export default function Home() {
               <Link
                 key={f.href}
                 href={f.href}
-                className="group relative p-6 rounded-2xl border border-[#2a3447] bg-[#141920] hover:border-[#c9a84c]/40 hover:bg-[#1c2433] transition-all duration-200"
+                className="group relative p-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[#c9a84c]/40 hover:bg-[var(--color-surface-2)] transition-all duration-200"
               >
                 <div
                   className="w-10 h-10 rounded-xl flex items-center justify-center text-xl mb-4"
@@ -105,8 +109,8 @@ export default function Home() {
                 >
                   {f.title}
                 </h3>
-                <p className="text-sm text-[#7a8599] leading-relaxed">{f.desc}</p>
-                <span className="absolute top-6 right-6 text-[#2a3447] group-hover:text-[#c9a84c] transition-colors text-lg">
+                <p className="text-sm text-[var(--color-muted)] leading-relaxed">{f.desc}</p>
+                <span className="absolute top-6 right-6 text-[var(--color-border)] group-hover:text-[#c9a84c] transition-colors text-lg">
                   →
                 </span>
               </Link>
@@ -123,8 +127,8 @@ export default function Home() {
               >
                 AI-Powered Insights
               </h3>
-              <p className="text-sm text-[#7a8599] leading-relaxed">
-                TSBudget AI reads your numbers and gives you 3 specific, actionable budgeting tips
+              <p className="text-sm text-[var(--color-muted)] leading-relaxed">
+                NetWorth AI reads your numbers and gives you 3 specific, actionable budgeting tips
                 — powered by Claude AI.
               </p>
             </div>
@@ -132,7 +136,7 @@ export default function Home() {
         </section>
 
         {/* Quick stats bar */}
-        <section className="border-t border-[#2a3447] py-10 bg-[#141920]">
+        <section className="border-t border-[var(--color-border)] py-10 bg-[var(--color-surface)]">
           <div className="mx-auto max-w-5xl px-4 grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
             {[
               ['All tax codes', 'Including K codes, BR, D0, NT'],
@@ -147,16 +151,16 @@ export default function Home() {
                 >
                   {label}
                 </div>
-                <div className="text-xs text-[#7a8599]">{sub}</div>
+                <div className="text-xs text-[var(--color-muted)]">{sub}</div>
               </div>
             ))}
           </div>
         </section>
 
         {/* Disclaimer */}
-        <footer className="border-t border-[#2a3447] py-6 text-center">
-          <p className="text-xs text-[#7a8599] max-w-2xl mx-auto px-4">
-            TSBudget provides estimates for guidance only. Figures are based on 2025/26 HMRC
+        <footer className="border-t border-[var(--color-border)] py-6 text-center">
+          <p className="text-xs text-[var(--color-muted)] max-w-2xl mx-auto px-4">
+            NetWorth provides estimates for guidance only. Figures are based on 2025/26 HMRC
             rates. Consult a qualified accountant for regulated financial advice.
           </p>
         </footer>
