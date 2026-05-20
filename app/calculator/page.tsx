@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
+import Link from 'next/link'
 import Nav from '@/components/Nav'
 import PayslipCard from '@/components/PayslipCard'
 import TaxDonutChart from '@/components/TaxDonutChart'
@@ -57,28 +58,7 @@ export default function CalculatorPage() {
   const [userId, setUserId] = useState<string | null>(null)
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
 
-  useEffect(() => {
-    if (!isSupabaseConfigured) return
-    const supabase = createClient()
-
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) {
-        setUserId(data.user.id)
-        loadProfile(supabase)
-      }
-    })
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      const uid = session?.user?.id ?? null
-      setUserId(uid)
-      if (uid) loadProfile(supabase)
-    })
-
-    return () => subscription.unsubscribe()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  async function loadProfile(supabase: ReturnType<typeof createClient>) {
+  const loadProfile = useCallback(async () => {
     const res = await fetch('/api/tax-profile')
     if (!res.ok) return
     const { taxProfile } = await res.json()
@@ -93,7 +73,27 @@ export default function CalculatorPage() {
       scotland: taxProfile.scotland ?? prev.scotland,
       employmentType: taxProfile.employment_type ?? prev.employmentType,
     }))
-  }
+  }, [])
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return
+    const supabase = createClient()
+
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        setUserId(data.user.id)
+        loadProfile()
+      }
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const uid = session?.user?.id ?? null
+      setUserId(uid)
+      if (uid) loadProfile()
+    })
+
+    return () => subscription.unsubscribe()
+  }, [loadProfile])
 
   const set = useCallback(<K extends keyof TaxInput>(key: K, value: TaxInput[K]) => {
     setForm((f) => ({ ...f, [key]: value }))
@@ -286,7 +286,12 @@ export default function CalculatorPage() {
                 {saveStatus === 'error' && <span className="text-sm text-[#ef4444]">Save failed</span>}
               </div>
             ) : (
-              <p className="text-xs text-[#7a8599]">Sign in to save your tax profile.</p>
+              <p className="text-xs text-[#7a8599]">
+                <Link href="/login?next=/calculator" className="font-semibold text-[#c9a84c] hover:text-[#e2c06e]">
+                  Sign in
+                </Link>{' '}
+                to save your tax profile.
+              </p>
             )}
           </div>
 

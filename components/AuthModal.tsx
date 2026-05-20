@@ -21,12 +21,12 @@ export default function AuthModal({ open, onClose, onSuccess }: Props) {
   const [info, setInfo] = useState<string | null>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
 
-  // Reset state when tab changes
-  useEffect(() => {
+  function changeTab(nextTab: Tab) {
+    setTab(nextTab)
     setError(null)
     setInfo(null)
     setPassword('')
-  }, [tab])
+  }
 
   // Close on Escape
   useEffect(() => {
@@ -109,7 +109,7 @@ export default function AuthModal({ open, onClose, onSuccess }: Props) {
             {(['signin', 'signup'] as Tab[]).map((t) => (
               <button
                 key={t}
-                onClick={() => setTab(t)}
+                onClick={() => changeTab(t)}
                 className={`flex-1 py-2 text-sm font-medium transition-colors ${
                   tab === t ? 'bg-[#c9a84c]/15 text-[#c9a84c]' : 'text-[#7a8599] hover:text-[#e8eaf0]'
                 }`}

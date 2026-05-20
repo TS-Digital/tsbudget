@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
 import type { User } from '@supabase/supabase-js'
 import AuthModal from '@/components/AuthModal'
+import { isSupabaseConfigured } from '@/lib/supabase/client'
 
 const links = [
   { href: '/calculator', label: 'Calculator' },
@@ -26,14 +27,12 @@ export default function Nav() {
   const [user, setUser] = useState<User | null>(null)
   const [authOpen, setAuthOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [supabaseReady, setSupabaseReady] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
   // Lazily import to avoid crashing when Supabase env vars aren't set
   useEffect(() => {
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return
+    if (!isSupabaseConfigured) return
 
-    setSupabaseReady(true)
     import('@/lib/supabase/client').then(({ createClient }) => {
       const supabase = createClient()
       supabase.auth.getUser().then(({ data }) => setUser(data.user))
@@ -96,7 +95,7 @@ export default function Nav() {
           <div className="flex items-center gap-3 shrink-0">
             <span className="text-xs text-[#7a8599] hidden lg:block">2025/26</span>
 
-            {supabaseReady && (
+            {isSupabaseConfigured && (
               user ? (
                 <div className="relative" ref={menuRef}>
                   <button
@@ -123,12 +122,12 @@ export default function Nav() {
                   )}
                 </div>
               ) : (
-                <button
-                  onClick={() => setAuthOpen(true)}
+                <Link
+                  href={`/login?next=${encodeURIComponent(pathname)}`}
                   className="px-3 py-1.5 rounded-lg text-sm font-medium border border-[#2a3447] text-[#7a8599] hover:border-[#c9a84c]/50 hover:text-[#c9a84c] transition-colors"
                 >
                   Sign In
-                </button>
+                </Link>
               )
             )}
           </div>

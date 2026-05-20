@@ -45,6 +45,8 @@
 
   /* Input / select — padding here is overridable by Tailwind utility pl-* classes */
   input[type="text"],
+  input[type="email"],
+  input[type="password"],
   input[type="number"],
   select,
   textarea {
@@ -60,6 +62,8 @@
   }
 
   input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus,
   input[type="number"]:focus,
   select:focus,
   textarea:focus {

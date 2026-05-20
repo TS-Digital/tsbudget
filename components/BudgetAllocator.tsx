@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo, useEffect, useCallback } from 'react'
+import Link from 'next/link'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 import { calcBudget, createDefaultCategories } from '@/lib/budgetEngine'
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/client'
@@ -294,7 +295,12 @@ export default function BudgetAllocator({ defaultNetMonthly = 2000 }: { defaultN
           {saveStatus === 'error' && <span className="text-sm text-[#ef4444]">Save failed — try again.</span>}
         </div>
       ) : (
-        <p className="text-xs text-[#7a8599]">Sign in to save your budget across devices.</p>
+        <p className="text-xs text-[#7a8599]">
+          <Link href="/login?next=/budget" className="font-semibold text-[#c9a84c] hover:text-[#e2c06e]">
+            Sign in
+          </Link>{' '}
+          to save your budget across devices.
+        </p>
       )}
     </div>
   )
