@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import { Syne, DM_Sans, Space_Mono } from 'next/font/google'
 import './globals.css'
 import ThemeProvider from '@/components/ThemeProvider'
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${syne.variable} ${dmSans.variable} ${spaceMono.variable} h-full`}>
+    <html lang="en" className={`${syne.variable} ${dmSans.variable} ${spaceMono.variable} h-full`} suppressHydrationWarning>
       <head>
         {/* Prevent flash of wrong theme on load */}
         <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem('networth-theme');document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark')}catch(e){}` }} />

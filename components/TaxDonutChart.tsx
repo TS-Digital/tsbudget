@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 import type { TaxBreakdown } from '@/types/finance'

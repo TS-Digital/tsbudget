@@ -1,4 +1,4 @@
-﻿import Nav from '@/components/Nav'
+import Nav from '@/components/Nav'
 import MarketSnapshot from '@/components/MarketSnapshot'
 import InvestCalculator from '@/components/InvestCalculator'
 import AssetComparison from '@/components/AssetComparison'
